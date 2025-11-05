@@ -14,6 +14,7 @@ import com.resend.services.emails.model.CreateEmailResponse;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class ResendEmailService implements SendEmail {
@@ -56,6 +57,7 @@ public class ResendEmailService implements SendEmail {
                 "<body>\n" +
                 "    <div class=\"container\">\n" +
                 "        <h1>Detalles de la Petición</h1>\n" +
+                "        <p><strong>Usuario:</strong> " + getUserEmail(request) + "</p>\n" +
                 "        <p><strong>IP:</strong> " + getClientIp(request) + "</p>\n" +
                 "        <p><strong>Método HTTP:</strong> " + request.getMethod() + "</p>\n" +
                 "        <p><strong>URI de la petición:</strong> " + request.getRequestURI() + "</p>\n" +
@@ -64,6 +66,13 @@ public class ResendEmailService implements SendEmail {
                 "    </div>\n" +
                 "</body>\n" +
                 "</html>";
+    }
+
+    private String getUserEmail(HttpServletRequest request) {
+        if (request.getSession().getAttribute("userEmail")!=null) {
+            return (String) request.getSession().getAttribute("userEmail");
+        }
+        return "Usuario sin autenticar";
     }
 
     private String getClientIp(HttpServletRequest request) {
