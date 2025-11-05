@@ -14,7 +14,6 @@ import com.resend.services.emails.model.CreateEmailResponse;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 @Service
 public class ResendEmailService implements SendEmail {
