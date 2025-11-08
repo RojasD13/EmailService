@@ -1,10 +1,10 @@
-package com.edu.uptc.emailService.service;
+package com.edu.uptc.emailConsumer.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.edu.uptc.emailService.dto.EmailNotificationEvent;
-import com.edu.uptc.emailService.model.SendEmail;
+import com.edu.uptc.emailConsumer.dto.EmailNotificationEvent;
+import com.edu.uptc.emailConsumer.model.SendEmail;
 import com.resend.Resend;
 import com.resend.core.exception.ResendException;
 import com.resend.services.emails.model.CreateEmailOptions;
