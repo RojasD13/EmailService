@@ -1,7 +1,8 @@
 package com.edu.uptc.emailService.model;
 
-import jakarta.servlet.http.HttpServletRequest;
+import com.edu.uptc.emailService.dto.EmailNotificationEvent;
+
 
 public interface SendEmail {
-    void sendEmail(HttpServletRequest request);
+    void sendEmailFromEvent(EmailNotificationEvent event);
 }

@@ -1,33 +1,30 @@
 package com.edu.uptc.emailService.service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.edu.uptc.emailService.dto.EmailNotificationEvent;
 import com.edu.uptc.emailService.model.SendEmail;
 import com.resend.Resend;
 import com.resend.core.exception.ResendException;
 import com.resend.services.emails.model.CreateEmailOptions;
-import com.resend.services.emails.model.CreateEmailResponse;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class ResendEmailService implements SendEmail {
-    
+
     @Value("${RESEND_API_KEY}")
     private String apiKey;
     @Value("${APP_ADMIN_EMAIL}")
     private String adminEmail;
     @Value("${API_EMAIL}")
-
     private String fromEmail;
+
     private Resend resend;
 
-    public ResendEmailService() {}
+    public ResendEmailService() {
+    }
 
     @PostConstruct
     public void init() {
@@ -35,51 +32,30 @@ public class ResendEmailService implements SendEmail {
     }
 
     @Override
-    public void sendEmail(HttpServletRequest request) {
+    public void sendEmailFromEvent(EmailNotificationEvent event) {
         try {
+            String html = generateHtml(event);
             CreateEmailOptions params = CreateEmailOptions.builder()
                     .from(fromEmail)
                     .to(adminEmail)
                     .subject("Info Registro Quejas")
-                    .html(generateHtml(request))
+                    .html(html)
                     .build();
-            CreateEmailResponse data = resend.emails().send(params);
-            System.out.println(data.getId());
+            resend.emails().send(params);
         } catch (ResendException e) {
             e.printStackTrace();
         }
     }
 
-    private String generateHtml(HttpServletRequest request) {
-        return "<!DOCTYPE html>\n" +
-                "<html lang=\"es\">\n" +
-                "<body>\n" +
-                "    <div class=\"container\">\n" +
-                "        <h1>Detalles de la Petición</h1>\n" +
-                "        <p><strong>Usuario:</strong> " + getUserEmail(request) + "</p>\n" +
-                "        <p><strong>IP:</strong> " + getClientIp(request) + "</p>\n" +
-                "        <p><strong>Método HTTP:</strong> " + request.getMethod() + "</p>\n" +
-                "        <p><strong>URI de la petición:</strong> " + request.getRequestURI() + "</p>\n" +
-                "        <p><strong>Fecha:</strong> "
-                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + "</p>\n" +
-                "    </div>\n" +
-                "</body>\n" +
-                "</html>";
+    private String generateHtml(EmailNotificationEvent event) {
+        return "<html><body>" +
+                "<h1>Detalles de la Petición</h1>" +
+                "<p><strong>Usuario:</strong> " + event.getUserEmail() + "</p>" +
+                "<p><strong>IP:</strong> " + event.getClientIp() + "</p>" +
+                "<p><strong>Método HTTP:</strong> " + event.getHttpMethod() + "</p>" +
+                "<p><strong>URI:</strong> " + event.getRequestUri() + "</p>" +
+                "<p><strong>Fecha:</strong> " + event.getTimestamp() + "</p>" +
+                "</body></html>";
     }
 
-    private String getUserEmail(HttpServletRequest request) {
-        if (request.getSession().getAttribute("userEmail")!=null) {
-            return (String) request.getSession().getAttribute("userEmail");
-        }
-        return "Usuario sin autenticar";
-    }
-
-    private String getClientIp(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip != null && !ip.isBlank()) {
-            return ip.split(",")[0].trim();
-        }
-        ip = request.getHeader("X-Real-IP");
-        return (ip != null && !ip.isBlank()) ? ip : request.getRemoteAddr();
-    }
 }
