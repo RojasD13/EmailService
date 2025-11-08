@@ -10,8 +10,10 @@ import com.resend.core.exception.ResendException;
 import com.resend.services.emails.model.CreateEmailOptions;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class ResendEmailService implements SendEmail {
 
     @Value("${RESEND_API_KEY}")
@@ -33,17 +35,17 @@ public class ResendEmailService implements SendEmail {
 
     @Override
     public void sendEmailFromEvent(EmailNotificationEvent event) {
-        try {
-            String html = generateHtml(event);
+        try {            
             CreateEmailOptions params = CreateEmailOptions.builder()
                     .from(fromEmail)
                     .to(adminEmail)
                     .subject("Info Registro Quejas")
-                    .html(html)
+                    .html(generateHtml(event))
                     .build();
             resend.emails().send(params);
+            log.info("Email enviado correctamente a {}", adminEmail);
         } catch (ResendException e) {
-            e.printStackTrace();
+            log.error("Error al enviar el email a {}: {}", adminEmail, e.getMessage());
         }
     }
 
