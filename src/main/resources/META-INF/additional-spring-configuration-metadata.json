@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "app.admin.email",
+    "type": "java.lang.String",
+    "description": "Correo destinatario 'app.admin.email'"
+  },
+  {
+    "name": "app.resend.api.key",
+    "type": "java.lang.String",
+    "description": "Contraseña API 'app.resend.api.key'"
+  },
+  {
+    "name": "app.resend.api.email",
+    "type": "java.lang.String",
+    "description": "Correo remitente 'app.resend.api.email'"
+  }
+]}
