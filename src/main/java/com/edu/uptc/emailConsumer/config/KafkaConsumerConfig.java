@@ -23,7 +23,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, EmailNotificationEvent> consumerFactory() {
         JsonDeserializer<EmailNotificationEvent> deserializer = new JsonDeserializer<>(EmailNotificationEvent.class);
-        deserializer.addTrustedPackages("*");
+        deserializer.addTrustedPackages("com.edu.uptc.emailConsumer.dto");
 
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
