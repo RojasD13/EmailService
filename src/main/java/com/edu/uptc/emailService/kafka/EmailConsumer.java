@@ -4,20 +4,23 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import com.edu.uptc.emailService.dto.EmailNotificationEvent;
-import com.edu.uptc.emailService.service.ResendEmailService;
+import com.edu.uptc.emailService.model.SendEmail;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class EmailConsumer {
 
-    private final ResendEmailService resendEmailService;
+    private final SendEmail emailService;
 
-    public EmailConsumer(ResendEmailService resendEmailService) {
-        this.resendEmailService = resendEmailService;
+    public EmailConsumer(SendEmail emailService) {
+        this.emailService = emailService;
     }
 
     @KafkaListener(topics = "email-notifications", groupId = "email-service")
     public void consumeEmailEvent(EmailNotificationEvent event) {
-        System.out.println("vento recibido de Kafka: " + event.getRequestUri());
-        resendEmailService.sendEmailFromEvent(event);
+        log.info("Received email notification event: {}", event);        
+        emailService.sendEmailFromEvent(event);
     }
 }
