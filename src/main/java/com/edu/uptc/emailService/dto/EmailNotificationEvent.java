@@ -2,11 +2,13 @@ package com.edu.uptc.emailService.dto;
 
 import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class EmailNotificationEvent {
     
     private String userEmail;
